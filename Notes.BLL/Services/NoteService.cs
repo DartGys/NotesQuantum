@@ -1,41 +1,67 @@
-﻿using Notes.BLL.Interfaces;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Notes.BLL.Interfaces;
 using Notes.BLL.Models;
 using Notes.DL.Data;
+using Notes.DL.Data.Entities;
 
 namespace Notes.BLL.Services
 {
     public class NoteService : INoteService
     {
         private readonly NotesDbContext _context;
+        private readonly IMapper _mapper;
 
-        public NoteService(NotesDbContext context)
+        public NoteService(NotesDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task AddAsync(NoteModel model)
         {
-            throw new NotImplementedException();
+            var entity = _mapper.Map<Note>(model);
+
+            await _context.AddAsync(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public Task DeleteAsync(int modelId)
+        public async Task DeleteAsync(Guid modelId)
         {
-            throw new NotImplementedException();
+            var entity = new Note
+            {
+                Id = modelId
+            };
+
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<NoteModel>> GetAllAsync()
+        public async Task<IEnumerable<NoteModel>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var entities = await _context.Notes.ToListAsync();
+            
+            var models = _mapper.Map<IEnumerable<NoteModel>>(entities);
+
+            return models;
         }
 
-        public Task<NoteModel> GetByIdAsync(int id)
+        public async Task<NoteModel> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = await _context.Notes.FindAsync(id);
+
+            var model = _mapper.Map<NoteModel>(entity);
+
+            return model;
         }
 
-        public Task UpdateAsync(NoteModel model)
+        public async Task UpdateAsync(NoteModel model)
         {
-            throw new NotImplementedException();
+            var entity = _mapper.Map<Note>(model);
+
+            _context.Update(entity);
+
+            await _context.SaveChangesAsync();
         }
     }
 }
