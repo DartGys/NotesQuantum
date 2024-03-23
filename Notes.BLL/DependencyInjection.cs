@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Notes.BLL.Common;
+using Notes.BLL.Interfaces;
+using Notes.BLL.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +15,8 @@ namespace Notes.BLL
         public static IServiceCollection AddBusinessServices(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutomapperProfile).Assembly);
+
+            services.AddScoped<INoteService, NoteService>();
 
             return services;
         }
