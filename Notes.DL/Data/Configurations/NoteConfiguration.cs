@@ -19,7 +19,6 @@ namespace Notes.DL.Data.Configurations
                 .IsRequired();
 
             builder.Property(x => x.CreateDate)
-                .HasColumnType("timestamp")
                 .IsRequired();
         }
     }

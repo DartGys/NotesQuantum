@@ -18,12 +18,14 @@ namespace Notes.BLL.Services
             _mapper = mapper;
         }
 
-        public async Task AddAsync(NoteModel model)
+        public async Task<Guid> AddAsync(NoteModel model)
         {
             var entity = _mapper.Map<Note>(model);
 
             await _context.AddAsync(entity);
             await _context.SaveChangesAsync();
+
+            return entity.Id;
         }
 
         public async Task DeleteAsync(Guid modelId)
@@ -55,13 +57,26 @@ namespace Notes.BLL.Services
             return model;
         }
 
-        public async Task UpdateAsync(NoteModel model)
+        public async Task<NoteModel> UpdateAsync(NoteModel model)
         {
-            var entity = _mapper.Map<Note>(model);
+            var entity = await _context.Notes.FindAsync(model.Id);
+
+            if(entity == null)
+            {
+                return null;
+            }
+
+            entity.Title = model.Title;
+            entity.Text = model.Text;
+            entity.CreateDate = DateTime.SpecifyKind(entity.CreateDate, DateTimeKind.Utc);
 
             _context.Update(entity);
 
             await _context.SaveChangesAsync();
+
+            var updatedModel = _mapper.Map<NoteModel>(entity);
+
+            return updatedModel;
         }
     }
 }

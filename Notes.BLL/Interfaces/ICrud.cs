@@ -8,9 +8,9 @@ namespace Notes.BLL.Interfaces
 
         Task<TModel> GetByIdAsync(Guid id);
 
-        Task AddAsync(TModel model);
+        Task<Guid> AddAsync(TModel model);
 
-        Task UpdateAsync(TModel model);
+        Task<TModel> UpdateAsync(TModel model);
 
         Task DeleteAsync(Guid modelId);
     }
