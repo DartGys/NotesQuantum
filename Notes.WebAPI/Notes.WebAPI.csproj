@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Notes.BLL\Notes.BLL.csproj" />
     <ProjectReference Include="..\Notes.DL\Notes.DL.csproj" />
   </ItemGroup>
