@@ -66,17 +66,11 @@ namespace Notes.BLL.Services
                 return null;
             }
 
-            entity.Title = model.Title;
-            entity.Text = model.Text;
-            entity.CreateDate = DateTime.SpecifyKind(entity.CreateDate, DateTimeKind.Utc);
-
-            _context.Update(entity);
+            _context.Update(model);
 
             await _context.SaveChangesAsync();
 
-            var updatedModel = _mapper.Map<NoteModel>(entity);
-
-            return updatedModel;
+            return model;
         }
     }
 }
