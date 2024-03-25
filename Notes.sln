@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes.WebAPI", "Notes.WebAP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes.BLL", "Notes.BLL\Notes.BLL.csproj", "{2FB9CC97-401A-4301-8C2B-1FFBDEF6658A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notes.WebUI", "Notes.WebUI\Notes.WebUI.csproj", "{74D050DF-B7C0-43FC-B8C0-B2ABE5EDE223}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Notes.WebUI", "Notes.WebUI\Notes.WebUI.csproj", "{74D050DF-B7C0-43FC-B8C0-B2ABE5EDE223}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

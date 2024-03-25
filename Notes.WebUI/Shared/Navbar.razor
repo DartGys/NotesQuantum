@@ -1,0 +1,46 @@
+﻿<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Кнопка для додавання нової нотатки -->
+        <button class="btn btn-primary me-lg-2" @onclick="AddNote">Створити нотатку</button>
+
+        <!-- Поле вводу для пошуку нотаток -->
+        <input class="form-control flex-grow-1 me-lg-2" @bind="@searchQuery" placeholder="Пошук нотаток" />
+
+        <!-- Кількість нотаток -->
+        <div class="navbar-text me-lg-2">Кількість нотаток: @noteCount</div>
+    </div>
+</nav>
+
+@if (showAddNoteForm)
+{
+    <div class="container mt-3">
+        <h4>Додати нотатку</h4>
+        <input @bind="title" placeholder="Заголовок" class="form-control mb-2" />
+        <input @bind="text" placeholder="Текст нотатки" class="form-control mb-2" />
+        <button @onclick="SaveNote" class="btn btn-primary">Зберегти</button>
+    </div>
+}
+
+@code {
+    private string searchQuery;
+    private int noteCount = 0;
+    private bool showAddNoteForm = false;
+    private string title;
+    private string text;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private void AddNote()
+    {
+        showAddNoteForm = true;
+    }
+
+    private async Task SaveNote()
+    {
+        // Додайте код для збереження нотатки
+        showAddNoteForm = false;
+        title = string.Empty;
+        text = string.Empty;
+    }
+}

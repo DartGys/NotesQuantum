@@ -1,0 +1,30 @@
+﻿@page "/"
+@inject NoteService noteService
+
+<h3>Головна сторінка</h3>
+
+@if (notes != null && notes.Any())
+{
+    <ul>
+        @foreach (var note in notes)
+        {
+            <li>
+                <h4>@note.Title</h4>
+                <p>@note.Text</p>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No notes available.</p>
+}
+
+@code {
+    private List<NoteModel> notes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        notes = await noteService.GetNotesAsync();
+    }
+}
