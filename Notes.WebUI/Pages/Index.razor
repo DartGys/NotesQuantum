@@ -1,30 +1,70 @@
 ﻿@page "/"
-@inject NoteService noteService
 
-<h3>Головна сторінка</h3>
+@using Notes.WebUI.Models
+@using Notes.WebUI.Interfaces
+@inject INoteService noteService
+
+<Navbar OnNoteAdded="HandleNoteChange" NoteCount="noteCount" />
 
 @if (notes != null && notes.Any())
 {
-    <ul>
-        @foreach (var note in notes)
-        {
-            <li>
-                <h4>@note.Title</h4>
-                <p>@note.Text</p>
-            </li>
-        }
-    </ul>
-}
-else
-{
-    <p>No notes available.</p>
+    @foreach (var note in notes)
+    {
+        <div class="note-block" style="border: 5px solid #96999a; background-color: #96999a; margin-top: 10px; border-radius: 10px;">
+            <div class="note-header" style="display: flex; align-items: center;">
+                <h5 style="margin-right: 100px; margin-left: 30px">@note.Title</h5>
+                <p>@note.CreateDate</p>
+                <button @onclick="() => ExpandNote(note)" class="btn btn-primary" style="margin-left: auto;">Переглянути нотатку</button>
+                <button @onclick="() => DeleteNote(note.Id)" class="btn btn-danger">Видалити нотатку</button>
+            </div>
+
+            @if (expandedStates.ContainsKey(note.Id) && expandedStates[note.Id])
+            {
+                <div style="margin: 7px; padding: 7px; background-color: white; border-radius: 10px;" class="note-text">
+                    <p>@note.Text</p>
+                </div>
+            }
+        </div>
+    }
 }
 
 @code {
-    private List<NoteModel> notes;
+    private IEnumerable<NotesModel> notes;
+    private Dictionary<Guid, bool> expandedStates = new Dictionary<Guid, bool>();
+    private int noteCount;
 
     protected override async Task OnInitializedAsync()
     {
-        notes = await noteService.GetNotesAsync();
+        await LoadNotes();
+    }
+
+    private async Task LoadNotes()
+    {
+        notes = await noteService.GetNotes();
+        notes = notes.OrderByDescending(n => n.CreateDate);
+        noteCount = notes.Count();
+    }
+
+    private async Task HandleNoteChange()
+    {
+        await LoadNotes();
+    }
+
+    private void ExpandNote(NotesModel note)
+    {
+        if (expandedStates.ContainsKey(note.Id))
+        {
+            expandedStates[note.Id] = !expandedStates[note.Id];
+        }
+        else
+        {
+            expandedStates.Add(note.Id, true);
+        }
+    }
+
+    private async Task DeleteNote(Guid id)
+    {
+        await noteService.DeleteNote(id);
+        await HandleNoteChange();
     }
 }

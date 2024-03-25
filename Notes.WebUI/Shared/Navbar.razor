@@ -1,13 +1,17 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-light">
+﻿@using Notes.WebUI.Models
+@using Notes.WebUI.Interfaces
+@inject INoteService noteService
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <!-- Кнопка для додавання нової нотатки -->
-        <button class="btn btn-primary me-lg-2" @onclick="AddNote">Створити нотатку</button>
+        <button class="btn btn-primary me-lg-2" @onclick="ShowForm">Створити нотатку</button>
 
         <!-- Поле вводу для пошуку нотаток -->
         <input class="form-control flex-grow-1 me-lg-2" @bind="@searchQuery" placeholder="Пошук нотаток" />
 
         <!-- Кількість нотаток -->
-        <div class="navbar-text me-lg-2">Кількість нотаток: @noteCount</div>
+        <div class="navbar-text me-lg-2">Кількість нотаток: @NoteCount</div>
     </div>
 </nav>
 
@@ -23,24 +27,28 @@
 
 @code {
     private string searchQuery;
-    private int noteCount = 0;
     private bool showAddNoteForm = false;
     private string title;
     private string text;
 
+    [Parameter]
+    public EventCallback OnNoteAdded { get; set; }
+
+    [Parameter]
+    public int NoteCount { get; set; }
+
     [Inject]
     private NavigationManager NavigationManager { get; set; }
 
-    private void AddNote()
+    private void ShowForm()
     {
         showAddNoteForm = true;
     }
 
     private async Task SaveNote()
     {
-        // Додайте код для збереження нотатки
         showAddNoteForm = false;
-        title = string.Empty;
-        text = string.Empty;
+        await noteService.CreateNote(title, text);
+        await OnNoteAdded.InvokeAsync(); // Поновлення списку після успішного додавання нотатки
     }
 }

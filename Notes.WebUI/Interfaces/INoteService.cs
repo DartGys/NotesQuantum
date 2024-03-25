@@ -6,7 +6,7 @@ namespace Notes.WebUI.Interfaces
     {
         public Task<IEnumerable<NotesModel>> GetNotes();
         public Task<NotesModel> GetNoteById();
-        public Task<Guid> AddNote(NotesModel model);
+        public Task<Guid> CreateNote(string title, string text);
         public Task DeleteNote(Guid id);
         public Task<NotesModel> UpdateNote(NotesModel model);
     }

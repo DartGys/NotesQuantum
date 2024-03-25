@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.28" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\Note\" />
+  </ItemGroup>
+
 </Project>

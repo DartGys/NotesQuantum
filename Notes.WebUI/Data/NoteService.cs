@@ -1,5 +1,6 @@
 ﻿using Notes.WebUI.Interfaces;
 using Notes.WebUI.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Notes.WebUI.Data
 {
@@ -13,8 +14,15 @@ namespace Notes.WebUI.Data
             _httpClient = httpClientFactory.CreateClient("NoteApiClient");
         }
 
-        public async Task<Guid> AddNote(NotesModel model)
+        public async Task<Guid> CreateNote(string title, string text)
         {
+            var model = new NotesModel
+            {
+                Text = text,
+                Title = title,
+                CreateDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
+            };
+
             var response = await _httpClient.PostAsJsonAsync(url, model);
 
             if (response.IsSuccessStatusCode)

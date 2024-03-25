@@ -9,7 +9,7 @@ namespace Notes.WebUI
         {
             services.AddHttpClient("NoteApiClient", client =>
             {
-                client.BaseAddress = new Uri("http://localhost:5182");
+                client.BaseAddress = new Uri("https://localhost:44331/");
             });
 
             services.AddScoped<INoteService, NoteService>();
