@@ -4,7 +4,7 @@
 @using Notes.WebUI.Interfaces
 @inject INoteService noteService
 
-<Navbar OnNoteAdded="HandleNoteChange" NoteCount="noteCount" />
+<Navbar OnNoteAdded="HandleNoteChange" NoteCount="noteCount" OnSearch="HandleSearch" />
 
 @if (notes != null && notes.Any())
 {
@@ -13,7 +13,7 @@
         <div class="note-block" style="border: 5px solid #96999a; background-color: #96999a; margin-top: 10px; border-radius: 10px;">
             <div class="note-header" style="display: flex; align-items: center;">
                 <h5 style="margin-right: 100px; margin-left: 30px">@note.Title</h5>
-                <p>@note.CreateDate</p>
+                <p>@TimeAgo(note.CreateDate)</p>
                 <button @onclick="() => ExpandNote(note)" class="btn btn-primary" style="margin-left: auto;">Переглянути нотатку</button>
                 <button @onclick="() => DeleteNote(note.Id)" class="btn btn-danger">Видалити нотатку</button>
             </div>
@@ -29,6 +29,7 @@
 }
 
 @code {
+    private IEnumerable<NotesModel> allNotes;
     private IEnumerable<NotesModel> notes;
     private Dictionary<Guid, bool> expandedStates = new Dictionary<Guid, bool>();
     private int noteCount;
@@ -40,14 +41,29 @@
 
     private async Task LoadNotes()
     {
-        notes = await noteService.GetNotes();
-        notes = notes.OrderByDescending(n => n.CreateDate);
+        allNotes = await noteService.GetNotes();
+        allNotes = allNotes.OrderByDescending(n => n.CreateDate);
+        notes = allNotes;
         noteCount = notes.Count();
     }
 
     private async Task HandleNoteChange()
     {
         await LoadNotes();
+    }
+
+    private async Task HandleSearch(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            notes = allNotes;
+            noteCount = notes.Count();
+        }
+        else
+        {
+            notes = allNotes.Where(n => n.Title.Contains(query, StringComparison.OrdinalIgnoreCase) || n.Text.Contains(query, StringComparison.OrdinalIgnoreCase));
+            noteCount = notes.Count();
+        }
     }
 
     private void ExpandNote(NotesModel note)
@@ -66,5 +82,28 @@
     {
         await noteService.DeleteNote(id);
         await HandleNoteChange();
+    }
+}
+
+@code{
+    // Коли була створенна нотатка
+    private string TimeAgo(DateTime date)
+    {
+        var timeDifference = DateTime.Now - date;
+        string timeAgo;
+        if (timeDifference.TotalMinutes < 60)
+        {
+            timeAgo = $"{(int)timeDifference.TotalMinutes} хвилин назад";
+        }
+        else if (timeDifference.TotalHours < 24)
+        {
+            timeAgo = $"{(int)timeDifference.TotalHours} годин назад";
+        }
+        else
+        {
+            timeAgo = $"{(int)timeDifference.TotalDays} днів назад";
+        }
+
+        return timeAgo;
     }
 }

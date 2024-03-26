@@ -20,7 +20,7 @@ namespace Notes.WebUI.Data
             {
                 Text = text,
                 Title = title,
-                CreateDate = DateTime.SpecifyKind(DateTime.Now, DateTimeKind.Utc)
+                CreateDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
             };
 
             var response = await _httpClient.PostAsJsonAsync(url, model);

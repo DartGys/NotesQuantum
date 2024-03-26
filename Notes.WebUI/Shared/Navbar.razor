@@ -8,7 +8,7 @@
         <button class="btn btn-primary me-lg-2" @onclick="ShowForm">Створити нотатку</button>
 
         <!-- Поле вводу для пошуку нотаток -->
-        <input class="form-control flex-grow-1 me-lg-2" @bind="@searchQuery" placeholder="Пошук нотаток" />
+        <input class="form-control flex-grow-1 me-lg-2" @bind="@searchQuery" @oninput="SearchNotes" placeholder="Пошук нотаток" />
 
         <!-- Кількість нотаток -->
         <div class="navbar-text me-lg-2">Кількість нотаток: @NoteCount</div>
@@ -37,8 +37,14 @@
     [Parameter]
     public int NoteCount { get; set; }
 
-    [Inject]
-    private NavigationManager NavigationManager { get; set; }
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+
+    private async Task SearchNotes(ChangeEventArgs e)
+    {
+        searchQuery = e.Value.ToString();
+        await OnSearch.InvokeAsync(searchQuery);
+    }
 
     private void ShowForm()
     {
@@ -50,5 +56,8 @@
         showAddNoteForm = false;
         await noteService.CreateNote(title, text);
         await OnNoteAdded.InvokeAsync(); // Поновлення списку після успішного додавання нотатки
+        title = string.Empty;
+        text = string.Empty;
+        searchQuery = string.Empty;
     }
 }
