@@ -62,8 +62,8 @@ namespace Notes.WebAPI.Controllers
             return Ok(model);
         }
 
-        [HttpDelete]
-        public async Task<ActionResult> Delete(Guid id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] Guid id)
         {
             await _noteService.DeleteAsync(id);
 

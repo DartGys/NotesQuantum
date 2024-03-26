@@ -1,0 +1,63 @@
+﻿@using Notes.WebUI.Models
+@using Notes.WebUI.Interfaces
+@inject INoteService noteService
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <!-- Кнопка для додавання нової нотатки -->
+        <button class="btn btn-primary me-lg-2" @onclick="ShowForm">Створити нотатку</button>
+
+        <!-- Поле вводу для пошуку нотаток -->
+        <input class="form-control flex-grow-1 me-lg-2" @bind="@searchQuery" @oninput="SearchNotes" placeholder="Пошук нотаток" />
+
+        <!-- Кількість нотаток -->
+        <div class="navbar-text me-lg-2">Кількість нотаток: @NoteCount</div>
+    </div>
+</nav>
+
+@if (showAddNoteForm)
+{
+    <div class="container mt-3">
+        <h4>Додати нотатку</h4>
+        <input @bind="title" placeholder="Заголовок" class="form-control mb-2" />
+        <input @bind="text" placeholder="Текст нотатки" class="form-control mb-2" />
+        <button @onclick="SaveNote" class="btn btn-primary">Зберегти</button>
+    </div>
+}
+
+@code {
+    private string searchQuery;
+    private bool showAddNoteForm = false;
+    private string title;
+    private string text;
+
+    [Parameter]
+    public EventCallback OnNoteAdded { get; set; }
+
+    [Parameter]
+    public int NoteCount { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnSearch { get; set; }
+
+    private async Task SearchNotes(ChangeEventArgs e)
+    {
+        searchQuery = e.Value.ToString();
+        await OnSearch.InvokeAsync(searchQuery);
+    }
+
+    private void ShowForm()
+    {
+        showAddNoteForm = true;
+    }
+
+    private async Task SaveNote()
+    {
+        showAddNoteForm = false;
+        await noteService.CreateNote(title, text);
+        await OnNoteAdded.InvokeAsync(); // Поновлення списку після успішного додавання нотатки
+        title = string.Empty;
+        text = string.Empty;
+        searchQuery = string.Empty;
+    }
+}
