@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Notes.DL\Notes.DL.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<InternalsVisibleTo Include="Notes.IntegrationTests"/>
+	</ItemGroup>
+
 </Project>

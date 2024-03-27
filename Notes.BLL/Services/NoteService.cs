@@ -66,7 +66,9 @@ namespace Notes.BLL.Services
                 return null;
             }
 
-            _context.Update(model);
+            entity.Title = model.Title;
+            entity.Text = model.Text;
+            entity.CreateDate = model.CreateDate;
 
             await _context.SaveChangesAsync();
 

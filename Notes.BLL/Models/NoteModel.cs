@@ -16,9 +16,9 @@ namespace Notes.BLL.Models
             CreateDate = createDate;
         }
 
-        public Guid Id { get; }
-        public string Title { get; }
-        public string Text { get; }
-        public DateTime CreateDate { get; }
+        public Guid Id { get; set; }
+        public string Title { get; set; }
+        public string Text { get; set; }
+        public DateTime CreateDate { get; set; }
     }
 }
