@@ -6,6 +6,17 @@
 
 <Navbar OnNoteAdded="HandleNoteChange" NoteCount="noteCount" OnSearch="HandleSearch" />
 
+@if (showUpdNoteForm)
+{
+    <div class="container mt-3">
+        <h4>Оновлення нотатки</h4>
+        <input @bind="titleUpd" placeholder="Заголовок" class="form-control mb-2" />
+        <input @bind="textUpd" placeholder="Текст нотатки" class="form-control mb-2" />
+        <button @onclick="UpdateNote" class="btn btn-primary">Зберегти</button>
+        <button @onclick="Discard" class="btn btn-danger">Відмінити</button>
+    </div>
+}
+
 @if (notes != null && notes.Any())
 {
     @foreach (var note in notes)
@@ -14,8 +25,9 @@
             <div class="note-header" style="display: flex; align-items: center;">
                 <h5 style="margin-right: 100px; margin-left: 30px">@note.Title</h5>
                 <p>@TimeAgo(note.CreateDate)</p>
-                <button @onclick="() => ExpandNote(note)" class="btn btn-primary" style="margin-left: auto;">Переглянути нотатку</button>
-                <button @onclick="() => DeleteNote(note.Id)" class="btn btn-danger">Видалити нотатку</button>
+                <button @onclick="() => ExpandNote(note)" class="btn btn-primary btn-sm" style="margin-left: auto;">Переглянути</button>
+                <button @onclick="() => DeleteNote(note.Id)" class="btn btn-danger btn-sm">Видалити</button>
+                <button @onclick="() => ShowUpdateForm(note.Id, note.Title, note.Text)" class="btn btn-primary btn-sm">Відредагувати</button>
             </div>
 
             @if (expandedStates.ContainsKey(note.Id) && expandedStates[note.Id])
@@ -82,6 +94,35 @@
     {
         await noteService.DeleteNote(id);
         await HandleNoteChange();
+    }
+
+    private bool showUpdNoteForm = false;
+    private Guid Id;
+    private string titleUpd;
+    private string textUpd;
+
+    private async Task ShowUpdateForm(Guid id, string title, string text)
+    {
+        showUpdNoteForm = true;
+        Id = id;
+        titleUpd = title;
+        textUpd = text;
+    }
+
+    private async Task Discard()
+    {
+        showUpdNoteForm = false;
+        titleUpd = string.Empty;
+        textUpd = string.Empty;
+    }
+
+    private async Task UpdateNote()
+    {
+        showUpdNoteForm = false;
+        await noteService.UpdateNote(Id,titleUpd, textUpd);
+        await HandleNoteChange();
+        titleUpd = string.Empty;
+        textUpd = string.Empty;
     }
 }
 

@@ -5,7 +5,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <!-- Кнопка для додавання нової нотатки -->
-        <button class="btn btn-primary me-lg-2" @onclick="ShowForm">Створити нотатку</button>
+        <button class="btn btn-primary me-lg-2" @onclick="ShowForm">Створити</button>
 
         <!-- Поле вводу для пошуку нотаток -->
         <input class="form-control flex-grow-1 me-lg-2" @bind="@searchQuery" @oninput="SearchNotes" placeholder="Пошук нотаток" />
@@ -22,6 +22,7 @@
         <input @bind="title" placeholder="Заголовок" class="form-control mb-2" />
         <input @bind="text" placeholder="Текст нотатки" class="form-control mb-2" />
         <button @onclick="SaveNote" class="btn btn-primary">Зберегти</button>
+        <button @onclick="Discard" class="btn btn-danger">Відмінити</button>
     </div>
 }
 
@@ -59,5 +60,12 @@
         title = string.Empty;
         text = string.Empty;
         searchQuery = string.Empty;
+    }
+
+    private async Task Discard()
+    {
+        showAddNoteForm = false;
+        title = string.Empty;
+        text = string.Empty;
     }
 }

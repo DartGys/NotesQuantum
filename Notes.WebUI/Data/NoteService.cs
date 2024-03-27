@@ -52,8 +52,15 @@ namespace Notes.WebUI.Data
             return await _httpClient.GetFromJsonAsync<IEnumerable<NotesModel>>(url);
         }
 
-        public async Task<NotesModel> UpdateNote(NotesModel model)
+        public async Task<NotesModel> UpdateNote(Guid id, string title, string text)
         {
+            var model = new NotesModel
+            {
+                Id = id,
+                Text = text,
+                Title = title,
+                CreateDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc)
+            };
             var response = await _httpClient.PutAsJsonAsync(url, model);
 
             if (response.IsSuccessStatusCode)
